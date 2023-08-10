@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Visametric Filler Page</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css"
+		integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+	<style>
+		form {
+			padding-top: 50px;
+			padding-left: 75px;
+		}
+
+		p {
+			padding-top: 50px;
+			padding-left: 75px;
+		}
+
+		input {
+			width: 300px;
+		}
+
+		label {
+			color: #B4886B;
+			font-weight: bold;
+			width: 330px;
+			float: left;
+		}
+
+		input[type=number] {
+			width: 60px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="message" style="background-color:Tomato;"></div>
+	<form>
+		<label for="ownerName">Your Name:</label>
+		<input type="text" id="ownerName" name="ownerName" required>
+		<br><br>
+		<label for="applicantId">Applicant ID:</label>
+		<input type="number" id="applicantId" name="applicantId" min="1" max="999" required>
+		<br><br>
+		<label for="countryName">Destination Country:</label>
+		<select id="countryName" name="countryName" required>
+			<option value="Germany">Germany</option>
+			<option value="Italy">Italy</option>
+		</select>
+		<br><br>
+		<label for="appointmentType">Appointment Type:</label>
+		<select id="appointmentType" name="appointmentType" required>
+			<option value="blank"></option>
+			<option value="Schengen">Schengen</option>
+			<option value="Legal">Legal</option>
+			<option value="Study">Study</option>
+		</select>
+		<br><br>
+		<label for="city">City:</label>
+		<select id="city" name="city">
+			<option value="0" selected="selected">Place of Residence</option>
+			<option value="9">AHWAZ</option>
+			<option value="6">ARAK</option>
+			<option value="7">ARDEBIL</option>
+			<option value="12">BANDARABBAS</option>
+			<option value="14">BIRJAND</option>
+			<option value="11">BOJNORD</option>
+			<option value="13">BUSHEHR</option>
+			<option value="2">ESFEHAN</option>
+			<option value="28">GORGAN</option>
+			<option value="29">HAMEDAN</option>
+			<option value="10">ILAM</option>
+			<option value="25">KARAJ</option>
+			<option value="26">KERMAN</option>
+			<option value="27">KERMANSHAH</option>
+			<option value="15">KHORAMABAD</option>
+			<option value="4">MASHHAD</option>
+			<option value="23">QAZVIN</option>
+			<option value="24">QOM</option>
+			<option value="16">RASHT</option>
+			<option value="21">SANANDAJ</option>
+			<option value="19">SARI</option>
+			<option value="20">SEMNAN</option>
+			<option value="22">SHAHREKORD</option>
+			<option value="5">SHIRAZ</option>
+			<option value="3">TABRIZ</option>
+			<option value="1">TEHRAN</option>
+			<option value="8">URUMIEH</option>
+			<option value="30">YASUJ</option>
+			<option value="31">YAZD</option>
+			<option value="17">ZAHEDAN</option>
+			<option value="18">ZANJAN</option>
+		</select>
+		<br><br>
+		<label for="paymentType">Payment Type:</label>
+		<select id="paymentType" name="paymentType" required>
+			<option value="blank"></option>
+			<option value="atm">Paid by Card</option>
+			<option value="transfer">Transfer</option>
+		</select>
+		<br><br>
+		<div id="paymentAdditionalInfo">
+			<!-- additional fields will be added dynamically via JavaScript -->
+		</div>
+
+		<div id="DatePicker">
+			<!-- additional fields will be added dynamically via JavaScript -->
+		</div>
+		<label for="totalPerson">Total Persons:</label>
+		<input type="number" id="totalPerson" name="totalPerson" min="1" max="6" required>
+		<br><br>
+		<label for="shebaNumber">Sheba Number:</label>
+		<input type="text" id="shebaNumber" name="shebaNumber" maxlength="26" style="text-transform:uppercase" required>
+		<br><br>
+		<label for="shebaOwner">Sheba Name (use Persian Alphabet!):</label>
+		<input type="text" id="shebaOwner" name="shebaOwner" required>
+		<br><br>
+
+		<label for="serviceType">Service Type:</label>
+		<select id="serviceType" name="serviceType" required>
+			<option value="ONLY_NORMAL">Only Normal</option>
+			<option value="NORMAL_OR_PRIME">Normal or Prime</option>
+		</select>
+		<br><br>
+		<label for="gapDays">Gap between booking date and appointment date (number of days): </label>
+		<input type="number" type="gapDays" id="gapDays" name="gapDays" min="0" max="6" value="0" required>
+		<br><br>
+		<div id="additionalGap">
+			<!-- additional fields will be added dynamically via JavaScript -->
+		</div>
+		<br><br>
+		<div id="additionalFields">
+			<!-- additional fields will be added dynamically via JavaScript -->
+		</div>
+
+	</form>
+
+	<div class="row center">
+		<p>
+			<input type="submit" id="download-btn" value="Download file">
+		</p>
+	</div>
+
+	<script>
+		function gapdefine() {
+			additionalGap.innerHTML = "";
+			let fields = "";
+			const appType = document.getElementById('appointmentType').value;
+			if (appType !== "blank") {
+				if (appType === "Legal" || appType === "Study") {
+					fields = '<label for="startBookDay">Booking Appointment after:</label>';
+					fields += '<select id="startBookDay" name="startBookDay" required>';
+					for (let j = 1; j <= 31; j++) {
+						fields += `<option value="${j}">${j}</option>`;
+					}
+					fields += '</select>';
+					fields += '<select id="startBookMonth" name="startBookMonth" required>';
+					fields += '<option month="1" value="Jan">January</option>';
+					fields += '<option month="2" value="Feb">February</option>';
+					fields += '<option month="3" value="Mar">March</option>';
+					fields += '<option month="4" value="Apr">April</option>';
+					fields += '<option month="5" value="May">May</option>';
+					fields += '<option month="6" value="Jun">June</option>';
+					fields += '<option month="7" value="Jul">July</option>';
+					fields += '<option month="8" value="Aug">August</option>';
+					fields += '<option month="9" value="Sep">September</option>';
+					fields += '<option month="10" value="Oct">October</option>';
+					fields += '<option month="11" value="Nov">November</option>';
+					fields += '<option month="12" value="Dec">December</option>';
+					fields += '</select>';
+				}
+			}
+			additionalGap.innerHTML = fields;
+		}
+		//generatePaymentFields
+		function generatePaymentFields() {
+			paymentAdditionalInfo.innerHTML = "";
+			let fields = "";
+			if (document.getElementById('paymentType').value !== "blank") {
+				if (document.getElementById('paymentType').value === "atm") {
+					fields = '<label for="paymentCard">Payment Card:</label>';
+					fields += '<input type="text" id="paymentCard" name="paymentCard" required><br>';
+				} else {
+					fields = '<label for="transactionNo">Transaction Number:</label>';
+					fields += '<input type="text" id="transactionNo" name="transactionNo" required><br>';
+				}
+			}
+			paymentAdditionalInfo.innerHTML = fields;
+			persianDatePicker();
+		}
+		function generateFields() {
+			additionalFields.innerHTML = "";
+			const totalPerson = parseInt(document.getElementById('totalPerson').value);
+			// generate additional fields based on totalPerson
+			let fields = '';
+			for (let i = 1; i <= totalPerson; i++) {
+				fields += `<h2>Person ${i}</h2>`;
+				fields += `<label for="person_${i}_name">Name:</label>`;
+				fields += `<input type="text" id="person_${i}_name" name="person_${i}_name" style="text-transform:uppercase" required><br>`;
+				fields += `<label for="person_${i}_surname">Surname:</label>`;
+				fields += `<input type="text" id="person_${i}_surname" name="person_${i}_surname" style="text-transform:uppercase" required><br>`;
+				fields += `<label for="person_${i}_birthday">Birthday:</label>`;
+				fields += `<select id="person_${i}_birthday" name="person_${i}_birthday" required>`;
+				for (let j = 1; j <= 31; j++) {
+					fields += `<option value="${j}">${j}</option>`;
+				}
+				fields += `</select>`;
+				fields += `<select id="person_${i}_birthmonth" name="person_${i}_birthmonth" required>`;
+				for (let j = 1; j <= 12; j++) {
+					fields += `<option value="${j}">${j}</option>`;
+				}
+				fields += `</select>`;
+				fields += `<input type="number" id="person_${i}_birthyear" name="person_${i}_birthyear" min="1900" max="2023" class="year" required><br>`;
+				fields += `<label for="person_${i}_passport_no">Passport No:</label>`;
+				fields += `<input type="text" id="person_${i}_passport_no" name="person_${i}_passport_no" required><br>`;
+				fields += `<label for="person_${i}_phone">Phone:</label>`;
+				fields += `<input type="tel" id="person_${i}_phone" name="person_${i}_phone" required><br>`;
+				fields += `<label for="person_${i}_email">Email:</label>`;
+				fields += `<input type="text" id="person_${i}_email" name="person_${i}_email" required><br>`;
+			}
+			additionalFields.innerHTML = fields;
+		}
+		function persianDatePicker() {
+			DatePicker.innerHTML = "";
+			let fieldspaymentDate = '<label for="persianDatePickerPayment">Payment Date:</label>';
+			fieldspaymentDate += '<select id="payment_day" name="payment_day" required>';
+			for (let j = 1; j <= 31; j++) {
+				fieldspaymentDate += `<option value="${j}">${j}</option>`;
+			}
+			fieldspaymentDate += '</select>';
+			fieldspaymentDate += '<select id="payment_month" name="payment_month" required>';
+			for (let j = 1; j <= 12; j++) {
+				fieldspaymentDate += `<option value="${j}">${j}</option>`;
+			}
+			fieldspaymentDate += '</select>';
+			fieldspaymentDate += '<select id="payment_year" name="payment_year" required>';
+			for (let j = 1401; j <= 1402; j++) {
+				fieldspaymentDate += `<option value="${j}">${j}</option>`;
+			}
+			fieldspaymentDate += '</select>';
+			DatePicker.innerHTML = fieldspaymentDate;
+		}
+		function validateData() {
+			if (document.getElementById('ownerName').value.length <= 2) {
+				alert("responsible person name is invalid");
+				return false;
+			}
+
+			if (document.getElementById('appointmentType').value === "blank") {
+				alert("Appointment Type is invalid");
+				return false;
+			}
+
+			const city = document.getElementById('city').value;
+			if (city == 0) {
+				alert("Please select a city");
+				return false;
+			}
+			const totalPerson = parseInt(document.getElementById('totalPerson').value);
+			if (isNaN(totalPerson)) {
+				alert("Please select total persons");
+				return false;
+			}
+
+			if (document.getElementById('paymentType').value === "blank") {
+				alert("Payment type is blank");
+				return false;
+			}
+
+			if (document.getElementById('paymentType').value === "atm") {
+				if (document.getElementById('paymentCard').value.trim().length !== 16) {
+					alert("Payment card is invalid");
+					return false;
+				}
+			}
+			else {
+				if (document.getElementById('transactionNo').value.length === 0) {
+					alert("Transaction Number is invalid");
+					return false;
+				}
+			}
+
+			const shebaNumber = document.getElementById('shebaNumber').value.toUpperCase();
+			if (!shebaNumber.startsWith('IR', 0) || shebaNumber.trim().length !== 26) {
+				alert("Sheba number is invalid");
+				return false;
+			}
+			if (document.getElementById('shebaOwner').value.length <= 2) {
+				alert("Sheba name is invalid");
+				return false;
+			}
+			if (document.getElementById('applicantId').value.length === 0 || (document.getElementById('applicantId').value.length > 3)) {
+				alert("Applicant ID is not valid");
+				return false;
+			}
+			for (let i = 1; i <= totalPerson; i++) {
+				if (document.getElementById(`person_${i}_name`).value.length === 0) {
+					const s = `applicant name` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+
+				if (document.getElementById(`person_${i}_surname`).value.length === 0) {
+					const s = `applicant surname` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+
+				if (document.getElementById(`person_${i}_passport_no`).value.length != 9) {
+					const s = `Passport number` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+				if (document.getElementById(`person_${i}_birthyear`).value.length != 4) {
+					const s = `Birth year` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+
+				if (document.getElementById(`person_${i}_phone`).value.length === 0) {
+					const s = `Phone number` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+
+				const email = document.getElementById(`person_${i}_email`).value;
+				if (email.length === 0) {
+					const s = `email` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+
+				const rx = /\S+@\S+\.\S+/;
+				if (!rx.test(email)) {
+					const s = `email` + ` ${i} ` + `is invalid`;
+					alert(s);
+					return false;
+				}
+			}
+
+			return true;
+		}
+		function $(id) {
+			return document.getElementById(id);
+		}
+		function popupDatepicker2Date() {
+			paymentYear = document.getElementById('payment_year').value;
+			paymentMonth = document.getElementById('payment_month').value;
+			if (paymentMonth.length < 2) {
+				paymentMonth = '0' + paymentMonth;
+			}
+			paymentDay = document.getElementById('payment_day').value;
+			if (paymentDay.length < 2) {
+				paymentDay = '0' + paymentDay;
+			}
+			return (paymentYear + '/' + paymentMonth + '/' + paymentDay);
+		}
+		function applicantsData() {
+			const totalPerson = parseInt(document.getElementById('totalPerson').value);
+			let fields = '';
+			for (let i = 1; i <= totalPerson; i++) {
+				personBirthMonth = document.getElementById(`person_${i}_birthmonth`).value;
+				if (personBirthMonth.length < 2) {
+					personBirthMonth = '0' + personBirthMonth;
+				}
+				personBirthDay = document.getElementById(`person_${i}_birthday`).value;
+				if (personBirthDay.length < 2) {
+					personBirthDay = '0' + personBirthDay;
+				}
+
+				fields += `name${i} = "` + document.getElementById(`person_${i}_name`).value.toUpperCase() + `";\n`;
+				fields += `surname${i} = "` + document.getElementById(`person_${i}_surname`).value.toUpperCase() + `";\n`;
+				fields += `birthday${i} = "` + personBirthDay + `";\n`;
+				fields += `birthmonth${i} = "` + personBirthMonth + `";\n`;
+				fields += `birthyear${i} = "` + document.getElementById(`person_${i}_birthyear`).value + `";\n`;
+				fields += `passport${i} = "` + document.getElementById(`person_${i}_passport_no`).value.toUpperCase() + `";\n`;
+				fields += `phone${i} = "` + document.getElementById(`person_${i}_phone`).value + `";\n`;
+				fields += `email${i} = "` + document.getElementById(`person_${i}_email`).value + `";\n`;
+				fields += `\n`;
+			}
+			return fields;
+		}
+		function writeData() {
+			const city = `city = ${$("city").value};\n`;
+			const office = `office = 1;\n`;
+			const officetype = `officetype = 1;\n`;
+			const totalPerson = `totalPerson = ${$("totalPerson").value};\n`;
+			var paymentInput = '';
+			var popupDatepicker = ``;
+			var datapicker = ``;
+			datapicker = popupDatepicker2Date();
+
+			if (document.getElementById('paymentType').value === "atm") {
+				paymentInput = `paymentCardInput = ${$("paymentCard").value};\n`;
+				popupDatepicker = `popupDatepicker2 = "${datapicker}";\n`;
+			} else {
+				paymentInput = `transactionId = ${$("transactionNo").value};\n`;
+				popupDatepicker = `popupDatepicker = "${datapicker}";\n`;
+			}
+
+			const country = document.getElementById('countryName').value;
+			countryName = `country = "${country}";\n`;
+			const appType = document.getElementById('appointmentType').value;
+			visaType = `appointment_type = "${appType}";\n`;
+			applicantId = `applicant_id = "${$("applicantId").value}";\n`
+			applicantName = `applicant_name = "${$("ownerName").value.toUpperCase()}";\n`
+			const serviceType = `service_type = "${$("serviceType").value.toUpperCase()}";\n`;
+
+			const scheba_number = `scheba_number = "${$("shebaNumber").value.toUpperCase()}";\n`;
+			const scheba_name = `scheba_name = "${$("shebaOwner").value}";\n`;
+
+			diff_days_to_book_date = '';
+			if ($("gapDays").value != "" && $("gapDays").value != "0") {
+				diff_days_to_book_date = `diff_days_to_book_date = ${$("gapDays").value};\n`
+			}
+			min_book_date = '';
+			if (appType === "Legal" || appType === "Study") {
+				startDay = document.getElementById(`startBookDay`).value;
+				if (startDay.length < 2) {
+					startDay = '0' + startDay;
+				}
+				const selectElement = document.getElementById("startBookMonth");
+				const selectedOption = selectElement.options[selectElement.selectedIndex];
+				startMonth = selectedOption.getAttribute("month");
+				if (startMonth.length < 2) {
+					startMonth = '0' + startMonth;
+				}
+
+				min_book_date = `min_book_date = "${startDay}-${startMonth}-2023";\n`
+			}
+
+			let data = countryName;
+			data += visaType;
+			data += applicantId;
+			data += applicantName;
+			data += serviceType;
+			data += diff_days_to_book_date;
+			data += min_book_date;
+			data += city;
+			data += office;
+			data += officetype;
+			data += totalPerson;
+			data += paymentInput;
+			data += popupDatepicker;
+			data += scheba_number;
+			data += scheba_name;
+			data += `\n`;
+			data = data + applicantsData();
+			return data;
+		}
+		function downloadData(filename, text) {
+			const element = document.createElement('a');
+			element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`);
+			element.setAttribute('download', filename);
+
+			element.style.display = 'none';
+			document.body.appendChild(element);
+
+			element.click();
+
+			document.body.removeChild(element);
+		}
+		function proceedFile() {
+			try {
+
+				countryPrefix = document.getElementById('countryName').value.toLowerCase();
+				if (countryPrefix == "germany") {
+					countryPrefix = "De-"
+				} else {
+					countryPrefix = "It-"
+				}
+
+				serviceType = document.getElementById('serviceType').value.toUpperCase();
+				if (serviceType.includes("PRIME")) {
+					serviceType = "-Pr"
+				} else {
+					serviceType = "-Nr"
+				}
+				const name = document.getElementById('ownerName').value.toUpperCase();
+
+				personCount = "-" + document.getElementById('totalPerson').value + 'P';
+
+				gDays = document.getElementById('gapDays').value;
+				gapDays = "";
+				if (gDays !== "" && gDays !== "0") {
+					gapDays = "-" + document.getElementById('gapDays').value + 'D';
+				}
+
+				startBookDate = "";
+				let appType = document.getElementById('appointmentType').value;
+				prefixName = `${appType.substring(0,3)}-`;
+				if (appType === "Legal" || appType === "Study") {
+					startBookDate = "-"
+					startDay = document.getElementById(`startBookDay`).value;
+					if (startDay.length < 2) {
+						startDay = '0' + startDay;
+					}
+					const selectElement = document.getElementById("startBookMonth");
+					const selectedOption = selectElement.options[selectElement.selectedIndex];
+					startMonth = selectedOption.getAttribute("month");
+					if (startMonth.length < 2) {
+						startMonth = '0' + startMonth;
+					}
+
+					startBookDate += "M" + startMonth + "D" + startDay;
+				}
+				applicantId = document.getElementById('applicantId').value
+				const filename = countryPrefix + prefixName + applicantId + name + startBookDate + personCount + serviceType + gapDays + ".txt";
+
+				if (validateData()) {
+					const textFile = writeData();
+					downloadData(filename, textFile);
+				}
+
+			}
+			catch (err) {
+				message.innerHTML = "Input " + err;
+			}
+		}
+		document.getElementById("appointmentType").addEventListener("input", gapdefine);
+		document.getElementById("paymentType").addEventListener("input", generatePaymentFields);
+		document.getElementById("totalPerson").addEventListener("input", generateFields);
+		document.getElementById("download-btn").addEventListener("click", proceedFile);
+	</script>
+</body>
+
+</html>
