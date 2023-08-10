@@ -1,1 +1,0 @@
-# visametric-team.github.io
