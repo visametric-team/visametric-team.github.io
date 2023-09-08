@@ -56,6 +56,12 @@
 			<option value="Study">Study</option>
 		</select>
 		<br><br>
+		<label for="nationalityType">Naitonality:</label>
+		<select id="nationalityType" name="nationalityType" required>
+			<option value="Iran">Iran</option>
+			<option value="Other">Other with residence permit</option>
+		</select>
+		<br><br>
 		<label for="city">City:</label>
 		<select id="city" name="city">
 			<option value="0" selected="selected">Place of Residence</option>
@@ -401,6 +407,8 @@
 			const country = document.getElementById('countryName').value;
 			countryName = `country = "${country}";\n`;
 			const appType = document.getElementById('appointmentType').value;
+			const nationalType = document.getElementById('nationalityType').value;
+			nationalName = `nationality = "${nationalType}";\n`;
 			visaType = `appointment_type = "${appType}";\n`;
 			applicantId = `applicant_id = "${$("applicantId").value}";\n`
 			applicantName = `applicant_name = "${$("ownerName").value.toUpperCase()}";\n`
@@ -430,6 +438,7 @@
 			}
 
 			let data = countryName;
+			data += nationalName;
 			data += visaType;
 			data += applicantId;
 			data += applicantName;
